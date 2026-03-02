@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeArc | Navigate Your Journey Through Life</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #14b8a6;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        .gradient-animated {
+            background-size: 200% 200%;
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: translateX(0);
+        }
+        
+        .blob {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: blob-morph 8s ease-in-out infinite;
+        }
+        
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+        }
+        
+        .timeline-line {
+            background: linear-gradient(180deg, #6366f1, #ec4899, #14b8a6, #f59e0b, #ef4444);
+        }
+        
+        .phase-card {
+            transition: all 0.3s ease;
+        }
+        
+        .phase-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .childhood-gradient {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .teen-gradient {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .young-adult-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .middle-age-gradient {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .senior-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center cursor-pointer" onclick="showPage('home')">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="ml-3 text-xl font-display font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">LifeArc</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <a onclick="showPage('home')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Home</a>
+                    <a onclick="showPage('childhood')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Childhood</a>
+                    <a onclick="showPage('teenage')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Teenage</a>
+                    <a onclick="showPage('young-adult')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Young Adult</a>
+                    <a onclick="showPage('middle-age')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Middle Age</a>
+                    <a onclick="showPage('senior')" class="nav-link px-4 py-2 text-gray-700 hover:text-indigo-600 cursor-pointer font-medium">Senior</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu fixed top-16 left-0 w-64 h-full bg-white shadow-xl md:hidden">
+            <div class="flex flex-col p-4 space-y-2">
+                <a onclick="showPage('home'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Home</a>
+                <a onclick="showPage('childhood'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Childhood</a>
+                <a onclick="showPage('teenage'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Teenage</a>
+                <a onclick="showPage('young-adult'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Young Adult</a>
+                <a onclick="showPage('middle-age'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Middle Age</a>
+                <a onclick="showPage('senior'); toggleMobileMenu()" class="px-4 py-3 rounded-lg hover:bg-indigo-50 cursor-pointer font-medium">Senior</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="min-h-screen hero-gradient gradient-animated relative flex items-center justify-center overflow-hidden pt-16">
+            <!-- Decorative Blobs -->
+            <div class="absolute top-20 left-10 w-72 h-72 bg-pink-400/30 blob animate-float"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/30 blob animate-float" style="animation-delay: -3s;"></div>
+            <div class="absolute top-1/2 left-1/4 w-48 h-48 bg-purple-400/20 blob animate-float" style="animation-delay: -5s;"></div>
+            
+            <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+                <span class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6 border border-white/30">✨ Your Guide to Purposeful Living</span>
+                <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
+                    Navigate Life's<br>
+                    <span class="bg-gradient-to-r from-yellow-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">Beautiful Arc</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    Every age brings unique opportunities. Discover meaningful goals and priorities for every stage of your journey.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showPage('childhood')" class="px-8 py-4 bg-white text-indigo-600 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
+                        Start Exploring →
+                    </button>
+                    <button onclick="document.getElementById('timeline-section').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 bg-white/20 text-white rounded-full font-semibold text-lg hover:bg-white/30 transition-all backdrop-blur-sm border border-white/30">
+                        View Timeline
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <svg class="w-8 h-8 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Life Phases Overview -->
+        <section id="timeline-section" class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="text-indigo-600 font-semibold tracking-wider uppercase">The Journey</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold mt-4 mb-6">Phases of Life</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Each phase brings unique opportunities, challenges, and rewards. Embrace every moment.</p>
+                </div>
+                
+                <!-- Timeline -->
+                <div class="relative">
+                    <!-- Vertical Line -->
+                    <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full timeline-line rounded-full"></div>
+                    
+                    <!-- Phase Cards -->
+                    <div class="space-y-12 lg:space-y-24">
+                        <!-- Childhood -->
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <div class="lg:w-1/2 lg:pr-16 lg:text-right">
+                                <div class="phase-card bg-gradient-to-br from-orange-100 to-amber-50 p-8 rounded-3xl shadow-lg cursor-pointer" onclick="showPage('childhood')">
+                                    <span class="text-6xl">🌱</span>
+                                    <h3 class="font-display text-3xl font-bold mt-4 text-orange-800">Childhood</h3>
+                                    <p class="text-gray-600 mt-2">Ages 0-12</p>
+                                    <p class="text-gray-700 mt-4">The foundation of who you become. A time of wonder, learning, and endless possibilities.</p>
+                                    <span class="inline-block mt-4 text-orange-600 font-semibold">Explore →</span>
+                                </div>
+                            </div>
+                            <div class="hidden lg:flex w-8 h-8 bg-orange-400 rounded-full border-4 border-white shadow-lg z-10"></div>
+                            <div class="lg:w-1/2 lg:pl-16"></div>
+                        </div>
+                        
+                        <!-- Teenage -->
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <div class="lg:w-1/2 lg:pr-16"></div>
+                            <div class="hidden lg:flex w-8 h-8 bg-pink-400 rounded-full border-4 border-white shadow-lg z-10"></div>
+                            <div class="lg:w-1/2 lg:pl-16">
+                                <div class="phase-card bg-gradient-to-br from-pink-100 to-rose-50 p-8 rounded-3xl shadow-lg cursor-pointer" onclick="showPage('teenage')">
+                                    <span class="text-6xl">🦋</span>
+                                    <h3 class="font-display text-3xl font-bold mt-4 text-pink-800">Teenage</h3>
+                                    <p class="text-gray-600 mt-2">Ages 13-19</p>
+                                    <p class="text-gray-700 mt-4">A transformative period of self-discovery, identity formation, and building lifelong skills.</p>
+                                    <span class="inline-block mt-4 text-pink-600 font-semibold">Explore →</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Young Adult -->
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <div class="lg:w-1/2 lg:pr-16 lg:text-right">
+                                <div class="phase-card bg-gradient-to-br from-indigo-100 to-purple-50 p-8 rounded-3xl shadow-lg cursor-pointer" onclick="showPage('young-adult')">
+                                    <span class="text-6xl">🚀</span>
+                                    <h3 class="font-display text-3xl font-bold mt-4 text-indigo-800">Young Adult</h3>
+                                    <p class="text-gray-600 mt-2">Ages 20-35</p>
+                                    <p class="text-gray-700 mt-4">The launch phase. Building careers, relationships, and establishing your place in the world.</p>
+                                    <span class="inline-block mt-4 text-indigo-600 font-semibold">Explore →</span>
+                                </div>
+                            </div>
+                            <div class="hidden lg:flex w-8 h-8 bg-indigo-400 rounded-full border-4 border-white shadow-lg z-10"></div>
+                            <div class="lg:w-1/2 lg:pl-16"></div>
+                        </div>
+                        
+                        <!-- Middle Age -->
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <div class="lg:w-1/2 lg:pr-16"></div>
+                            <div class="hidden lg:flex w-8 h-8 bg-teal-400 rounded-full border-4 border-white shadow-lg z-10"></div>
+                            <div class="lg:w-1/2 lg:pl-16">
+                                <div class="phase-card bg-gradient-to-br from-teal-100 to-emerald-50 p-8 rounded-3xl shadow-lg cursor-pointer" onclick="showPage('middle-age')">
+                                    <span class="text-6xl">⚡</span>
+                                    <h3 class="font-display text-3xl font-bold mt-4 text-teal-800">Middle Age</h3>
+                                    <p class="text-gray-600 mt-2">Ages 36-55</p>
+                                    <p class="text-gray-700 mt-4">Peak performance years. Leadership, legacy building, and meaningful contribution to society.</p>
+                                    <span class="inline-block mt-4 text-teal-600 font-semibold">Explore →</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Senior -->
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <div class="lg:w-1/2 lg:pr-16 lg:text-right">
+                                <div class="phase-card bg-gradient-to-br from-rose-100 to-pink-50 p-8 rounded-3xl shadow-lg cursor-pointer" onclick="showPage('senior')">
+                                    <span class="text-6xl">🌟</span>
+                                    <h3 class="font-display text-3xl font-bold mt-4 text-rose-800">Senior Years</h3>
+                                    <p class="text-gray-600 mt-2">Ages 55+</p>
+                                    <p class="text-gray-700 mt-4">The wisdom years. Reflection, mentorship, and enjoying the fruits of a life well-lived.</p>
+                                    <span class="inline-block mt-4 text-rose-600 font-semibold">Explore →</span>
+                                </div>
+                            </div>
+                            <div class="hidden lg:flex w-8 h-8 bg-rose-400 rounded-full border-4 border-white shadow-lg z-10"></div>
+                            <div class="lg:w-1/2 lg:pl-16"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="py-24 bg-gradient-to-r from-gray-900 to-indigo-900 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            </div>
+            <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+                <svg class="w-16 h-16 mx-auto text-indigo-400 mb-8 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                </svg>
+                <blockquote class="font-display text-3xl md:text-4xl text-white leading-relaxed mb-8">
+                    "Life is not measured by the number of breaths we take, but by the moments that take our breath away."
+                </blockquote>
+                <cite class="text-indigo-300 text-lg">— Maya Angelou</cite>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">5</div>
+                        <p class="text-gray-600 mt-2">Life Phases</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">50+</div>
+                        <p class="text-gray-600 mt-2">Goals & Priorities</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">∞</div>
+                        <p class="text-gray-600 mt-2">Possibilities</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">1</div>
+                        <p class="text-gray-600 mt-2">Precious Life</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CHILDHOOD PAGE -->
+    <div id="childhood" class="page">
+        <section class="min-h-screen childhood-gradient pt-24 pb-16 relative overflow-hidden">
+            <div class="absolute top-32 right-10 text-9xl opacity-20 animate-float">🌱</div>
+            <div class="absolute bottom-20 left-10 text-8xl opacity-20 animate-float" style="animation-delay: -2s;">🎨</div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-orange-200 text-orange-800 rounded-full text-sm font-semibold mb-4">Ages 0-12</span>
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-orange-900 mb-6">Childhood</h1>
+                    <p class="text-xl text-orange-800 max-w-2xl mx-auto">The magical years of wonder, curiosity, and building the foundation for everything that follows.</p>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mb-6">📚</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Learning & Curiosity</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Develop reading habits</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Ask questions freely</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Explore diverse interests</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Learn through play</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-red-500 rounded-2xl flex items-center justify-center text-3xl mb-6">❤️</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Emotional Foundation</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Feel safe and loved</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Express emotions freely</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Build self-confidence</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Develop empathy</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🤝</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Social Skills</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Make friends naturally</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Learn to share</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Understand cooperation</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Respect others</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Goals Section -->
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl">
+                    <h2 class="font-display text-3xl font-bold text-gray-800 mb-8 text-center">Key Goals & Milestones</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">🎯</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Physical Development</h4>
+                                    <p class="text-gray-600">Develop motor skills, stay active, embrace outdoor play and sports.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">🧠</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Cognitive Growth</h4>
+                                    <p class="text-gray-600">Problem-solving, basic math, language skills, and creative thinking.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">🎨</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Creative Expression</h4>
+                                    <p class="text-gray-600">Art, music, storytelling, and imaginative play without limits.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">🌳</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Nature Connection</h4>
+                                    <p class="text-gray-600">Explore nature, learn about animals, plants, and the environment.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">👨‍👩‍👧‍👦</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Family Bonds</h4>
+                                    <p class="text-gray-600">Strong family relationships, traditions, and quality time together.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <span class="text-2xl">💝</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-gray-800">Core Values</h4>
+                                    <p class="text-gray-600">Honesty, kindness, respect, and responsibility begin here.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-12">
+                    <button onclick="showPage('home')" class="flex items-center text-orange-800 hover:text-orange-600 font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Back to Home
+                    </button>
+                    <button onclick="showPage('teenage')" class="flex items-center px-6 py-3 bg-orange-600 text-white rounded-full hover:bg-orange-700 font-semibold shadow-lg">
+                        Next: Teenage
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TEENAGE PAGE -->
+    <div id="teenage" class="page">
+        <section class="min-h-screen teen-gradient pt-24 pb-16 relative overflow-hidden">
+            <div class="absolute top-32 right-10 text-9xl opacity-20 animate-float">🦋</div>
+            <div class="absolute bottom-20 left-10 text-8xl opacity-20 animate-float" style="animation-delay: -2s;">🎸</div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-pink-200 text-pink-800 rounded-full text-sm font-semibold mb-4">Ages 13-19</span>
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-pink-900 mb-6">Teenage Years</h1>
+                    <p class="text-xl text-pink-800 max-w-2xl mx-auto">The transformative period of self-discovery, identity formation, and preparing for adulthood.</p>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🎓</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Education Focus</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Excel academically</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Discover your interests</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Build study habits</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Explore career paths</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🪞</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Identity Formation</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-teal-500 mr-2">✓</span>Understand yourself</li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-2">✓</span>Develop personal values</li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-2">✓</span>Build self-esteem</li>
+                            <li class="flex items-start"><span class="text-teal-500 mr-2">✓</span>Accept uniqueness</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/80 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🏃</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Physical Wellness</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Stay physically active</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Healthy eating habits</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Adequate sleep</li>
+                            <li class="flex items-start"><span class="text-orange-500 mr-2">✓</span>Body acceptance</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Important Skills -->
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
+                    <h2 class="font-display text-3xl font-bold text-gray-800 mb-8 text-center">Essential Skills to Develop</h2>
+                    
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="text-center p-6 bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl">
+                            <span class="text-4xl">💬</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Communication</h4>
+                            <p class="text-sm text-gray-600 mt-2">Express thoughts clearly and listen actively</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
+                            <span class="text-4xl">⏰</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Time Management</h4>
+                            <p class="text-sm text-gray-600 mt-2">Balance school, activities, and personal time</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl">
+                            <span class="text-4xl">💰</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Financial Basics</h4>
+                            <p class="text-sm text-gray-600 mt-2">Saving, budgeting, and value of money</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl">
+                            <span class="text-4xl">🧩</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Problem Solving</h4>
+                            <p class="text-sm text-gray-600 mt-2">Critical thinking and decision making</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quote -->
+                <div class="bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl p-8 md:p-12 text-center text-white mb-12">
+                    <p class="font-display text-2xl md:text-3xl italic">"The teenage years are a time to discover who you are, not who others want you to be."</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
+                    <button onclick="showPage('childhood')" class="flex items-center text-pink-800 hover:text-pink-600 font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Previous: Childhood
+                    </button>
+                    <button onclick="showPage('young-adult')" class="flex items-center px-6 py-3 bg-pink-600 text-white rounded-full hover:bg-pink-700 font-semibold shadow-lg">
+                        Next: Young Adult
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- YOUNG ADULT PAGE -->
+    <div id="young-adult" class="page">
+        <section class="min-h-screen young-adult-gradient pt-24 pb-16 relative overflow-hidden">
+            <div class="absolute top-32 right-10 text-9xl opacity-20 animate-float">🚀</div>
+            <div class="absolute bottom-20 left-10 text-8xl opacity-20 animate-float" style="animation-delay: -2s;">💼</div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-indigo-200 text-indigo-800 rounded-full text-sm font-semibold mb-4">Ages 20-35</span>
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-white mb-6">Young Adult</h1>
+                    <p class="text-xl text-indigo-100 max-w-2xl mx-auto">The launch phase of life. Building your career, relationships, and establishing your place in the world.</p>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-3xl mb-6">💼</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Career Building</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-indigo-500 mr-2">✓</span>Find your passion</li>
+                            <li class="flex items-start"><span class="text-indigo-500 mr-2">✓</span>Build expertise</li>
+                            <li class="flex items-start"><span class="text-indigo-500 mr-2">✓</span>Network strategically</li>
+                            <li class="flex items-start"><span class="text-indigo-500 mr-2">✓</span>Take calculated risks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-red-500 rounded-2xl flex items-center justify-center text-3xl mb-6">💕</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Relationships</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Build meaningful connections</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Learn partnership skills</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Maintain friendships</li>
+                            <li class="flex items-start"><span class="text-pink-500 mr-2">✓</span>Set boundaries</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-3xl mb-6">💰</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Financial Freedom</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Start investing early</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Build emergency fund</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Avoid bad debt</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Multiple income streams</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Life Pillars -->
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
+                    <h2 class="font-display text-3xl font-bold text-gray-800 mb-8 text-center">The 5 Pillars to Focus On</h2>
+                    
+                    <div class="grid md:grid-cols-5 gap-4">
+                        <div class="text-center p-6 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl">
+                            <span class="text-4xl">🎯</span>
+                            <h4 class="font-bold mt-4 text-gray-800">Purpose</h4>
+                            <p class="text-xs text-gray-600 mt-2">Define your life mission</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl">
+                            <span class="text-4xl">❤️</span>
+                            <h4 class="font-bold mt-4 text-gray-800">Health</h4>
+                            <p class="text-xs text-gray-600 mt-2">Physical & mental wellness</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl">
+                            <span class="text-4xl">💵</span>
+                            <h4 class="font-bold mt-4 text-gray-800">Wealth</h4>
+                            <p class="text-xs text-gray-600 mt-2">Financial security</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl">
+                            <span class="text-4xl">🤝</span>
+                            <h4 class="font-bold mt-4 text-gray-800">Relationships</h4>
+                            <p class="text-xs text-gray-600 mt-2">Deep connections</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-2xl">
+                            <span class="text-4xl">📚</span>
+                            <h4 class="font-bold mt-4 text-gray-800">Growth</h4>
+                            <p class="text-xs text-gray-600 mt-2">Continuous learning</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Items -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white/90 rounded-3xl p-8 shadow-xl">
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="mr-3">✅</span> Do This
+                        </h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Invest in yourself first</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Build a strong professional network</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Travel and gain experiences</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Develop multiple skills</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Save at least 20% of income</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 rounded-3xl p-8 shadow-xl">
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="mr-3">❌</span> Avoid This
+                        </h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Lifestyle inflation</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Comparing to others' highlight reels</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Neglecting health for work</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Toxic relationships</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Waiting for the "perfect" time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
+                    <button onclick="showPage('teenage')" class="flex items-center text-white hover:text-indigo-200 font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Previous: Teenage
+                    </button>
+                    <button onclick="showPage('middle-age')" class="flex items-center px-6 py-3 bg-white text-indigo-600 rounded-full hover:bg-indigo-50 font-semibold shadow-lg">
+                        Next: Middle Age
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MIDDLE AGE PAGE -->
+    <div id="middle-age" class="page">
+        <section class="min-h-screen middle-age-gradient pt-24 pb-16 relative overflow-hidden">
+            <div class="absolute top-32 right-10 text-9xl opacity-20 animate-float">⚡</div>
+            <div class="absolute bottom-20 left-10 text-8xl opacity-20 animate-float" style="animation-delay: -2s;">🏆</div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-emerald-200 text-emerald-800 rounded-full text-sm font-semibold mb-4">Ages 36-55</span>
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-white mb-6">Middle Age</h1>
+                    <p class="text-xl text-emerald-100 max-w-2xl mx-auto">Your peak performance years. Leadership, legacy building, and making meaningful contributions.</p>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-3xl mb-6">👑</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Leadership</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span>Mentor others</li>
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span>Lead by example</li>
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span>Build high-performing teams</li>
+                            <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span>Create lasting impact</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🏠</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Family & Legacy</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-blue-500 mr-2">✓</span>Nurture family bonds</li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-2">✓</span>Guide children's growth</li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-2">✓</span>Create family traditions</li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-2">✓</span>Plan for the future</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🧘</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Health Priority</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Regular health checkups</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Stress management</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Work-life balance</li>
+                            <li class="flex items-start"><span class="text-purple-500 mr-2">✓</span>Mental wellness</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Wealth Building -->
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
+                    <h2 class="font-display text-3xl font-bold text-gray-800 mb-8 text-center">Wealth & Security Focus</h2>
+                    
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-4xl mb-4">🏦</div>
+                            <h4 class="font-bold text-xl text-gray-800">Maximize Earnings</h4>
+                            <p class="text-gray-600 mt-2">Peak earning years - negotiate, invest, diversify income streams</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-4xl mb-4">📈</div>
+                            <h4 class="font-bold text-xl text-gray-800">Grow Investments</h4>
+                            <p class="text-gray-600 mt-2">Compound growth, real estate, retirement accounts</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-4xl mb-4">🛡️</div>
+                            <h4 class="font-bold text-xl text-gray-800">Protect Assets</h4>
+                            <p class="text-gray-600 mt-2">Insurance, estate planning, risk management</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Life Reflection -->
+                <div class="bg-gradient-to-r from-emerald-700 to-teal-700 rounded-3xl p-8 md:p-12 text-white mb-12">
+                    <h2 class="font-display text-3xl font-bold mb-6 text-center">The Midlife Opportunity</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-xl mb-4 flex items-center"><span class="mr-3">🔄</span>Reinvention Time</h4>
+                            <p class="text-emerald-100">This is your chance to pivot, pursue delayed dreams, or double down on what's working. Experience and wisdom meet remaining energy.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-xl mb-4 flex items-center"><span class="mr-3">🌟</span>Peak Influence</h4>
+                            <p class="text-emerald-100">Your network, experience, and resources are at their peak. Use them to create meaningful change in your community and industry.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
+                    <button onclick="showPage('young-adult')" class="flex items-center text-white hover:text-emerald-200 font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Previous: Young Adult
+                    </button>
+                    <button onclick="showPage('senior')" class="flex items-center px-6 py-3 bg-white text-emerald-600 rounded-full hover:bg-emerald-50 font-semibold shadow-lg">
+                        Next: Senior Years
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SENIOR PAGE -->
+    <div id="senior" class="page">
+        <section class="min-h-screen senior-gradient pt-24 pb-16 relative overflow-hidden">
+            <div class="absolute top-32 right-10 text-9xl opacity-20 animate-float">🌟</div>
+            <div class="absolute bottom-20 left-10 text-8xl opacity-20 animate-float" style="animation-delay: -2s;">📖</div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-rose-200 text-rose-800 rounded-full text-sm font-semibold mb-4">Ages 55+</span>
+                    <h1 class="font-display text-5xl md:text-7xl font-bold text-white mb-6">Senior Years</h1>
+                    <p class="text-xl text-rose-100 max-w-2xl mx-auto">The wisdom years. A time for reflection, legacy, mentorship, and enjoying the fruits of life.</p>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-2xl flex items-center justify-center text-3xl mb-6">📚</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Wisdom Sharing</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-rose-500 mr-2">✓</span>Mentor younger generations</li>
+                            <li class="flex items-start"><span class="text-rose-500 mr-2">✓</span>Share life experiences</li>
+                            <li class="flex items-start"><span class="text-rose-500 mr-2">✓</span>Write your story</li>
+                            <li class="flex items-start"><span class="text-rose-500 mr-2">✓</span>Teach valuable lessons</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🎨</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Fulfillment</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">✓</span>Pursue passions fully</li>
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">✓</span>Travel and explore</li>
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">✓</span>Learn new skills</li>
+                            <li class="flex items-start"><span class="text-amber-500 mr-2">✓</span>Enjoy hobbies deeply</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur rounded-3xl p-8 card-hover shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🙏</div>
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-4">Inner Peace</h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-violet-500 mr-2">✓</span>Spiritual growth</li>
+                            <li class="flex items-start"><span class="text-violet-500 mr-2">✓</span>Practice gratitude</li>
+                            <li class="flex items-start"><span class="text-violet-500 mr-2">✓</span>Find contentment</li>
+                            <li class="flex items-start"><span class="text-violet-500 mr-2">✓</span>Embrace peace</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Legacy Building -->
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
+                    <h2 class="font-display text-3xl font-bold text-gray-800 mb-8 text-center">Building Your Legacy</h2>
+                    
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="text-center p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl">
+                            <span class="text-4xl">👨‍👩‍👧‍👦</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Family Legacy</h4>
+                            <p class="text-sm text-gray-600 mt-2">Pass down values, stories, and traditions</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl">
+                            <span class="text-4xl">🏛️</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Community Impact</h4>
+                            <p class="text-sm text-gray-600 mt-2">Volunteer, donate, make a difference</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl">
+                            <span class="text-4xl">💰</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Financial Legacy</h4>
+                            <p class="text-sm text-gray-600 mt-2">Estate planning, wealth transfer</p>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
+                            <span class="text-4xl">💡</span>
+                            <h4 class="font-semibold mt-4 text-gray-800">Knowledge Legacy</h4>
+                            <p class="text-sm text-gray-600 mt-2">Books, teachings, documented wisdom</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health & Wellness -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white/90 rounded-3xl p-8 shadow-xl">
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="mr-3">💪</span> Health Priorities
+                        </h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-center"><span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>Regular medical checkups</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>Stay physically active daily</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>Mental stimulation & learning</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>Social connections</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-rose-500 rounded-full mr-3"></span>Quality sleep</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/90 rounded-3xl p-8 shadow-xl">
+                        <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="mr-3">🌈</span> Joy & Purpose
+                        </h3>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>Spend time with loved ones</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>Pursue delayed dreams</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>Give back to community</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>Create new memories</li>
+                            <li class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>Celebrate achievements</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Inspirational Quote -->
+                <div class="bg-gradient-to-r from-rose-700 to-pink-700 rounded-3xl p-8 md:p-12 text-center text-white mb-12">
+                    <p class="font-display text-2xl md:text-3xl italic">"The afternoon knows what the morning never suspected."</p>
+                    <p class="mt-4 text-rose-200">— Robert Frost</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
+                    <button onclick="showPage('middle-age')" class="flex items-center text-white hover:text-rose-200 font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Previous: Middle Age
+                    </button>
+                    <button onclick="showPage('home')" class="flex items-center px-6 py-3 bg-white text-rose-600 rounded-full hover:bg-rose-50 font-semibold shadow-lg">
+                        Back to Home
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="ml-3 text-xl font-display font-bold">LifeArc</span>
+                    </div>
+                    <p class="text-gray-400 max-w-md">Guiding you through every stage of life with purpose, wisdom, and inspiration. Your journey matters — embrace every arc.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a onclick="showPage('home')" class="hover:text-white cursor-pointer">Home</a></li>
+                        <li><a onclick="showPage('childhood')" class="hover:text-white cursor-pointer">Childhood</a></li>
+                        <li><a onclick="showPage('teenage')" class="hover:text-white cursor-pointer">Teenage</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">More Phases</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a onclick="showPage('young-adult')" class="hover:text-white cursor-pointer">Young Adult</a></li>
+                        <li><a onclick="showPage('middle-age')" class="hover:text-white cursor-pointer">Middle Age</a></li>
+                        <li><a onclick="showPage('senior')" class="hover:text-white cursor-pointer">Senior Years</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>© 2024 LifeArc. Embrace every moment of your journey. 🌈</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Update URL hash
+            history.pushState(null, null, `#${pageId}`);
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('open');
+        }
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+            const hash = window.location.hash.slice(1) || 'home';
+            showPage(hash);
+        });
+
+        // Check URL hash on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.slice(1) || 'home';
+            showPage(hash);
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = event.target.closest('button');
+            
+            if (mobileMenu.classList.contains('open') && !mobileMenu.contains(event.target) && !menuButton) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
